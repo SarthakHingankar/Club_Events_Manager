@@ -1,7 +1,7 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
-import { auth, db} from "./firebase"; // Ensure this is properly imported and initialized
-import { setDoc, doc} from "firebase/firestore";
+import { auth, db } from "/src/components/firebase"; // Ensure this is properly imported and initialized
+import { setDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify";
 
 function Signup() {
@@ -17,11 +17,11 @@ function Signup() {
       await createUserWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
       console.log(user);
-      if(user){
-        await setDoc(doc(db, "Users", user.uid),{
-            email: user.email,
-            firstName: fname,
-            lastName: lname,
+      if (user) {
+        await setDoc(doc(db, "Users", user.uid), {
+          email: user.email,
+          firstName: fname,
+          lastName: lname,
         });
       }
       console.log("User Registered Successfully!!");
