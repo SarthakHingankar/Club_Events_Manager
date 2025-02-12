@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./index.css";
 import Landing from "./pages/landing";
-import Signup from "./components/signup";
+import Signup from "./pages/Signup";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
