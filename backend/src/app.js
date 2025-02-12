@@ -10,8 +10,10 @@ app.use(express.json()); // Parse JSON requests
 app.use(cors()); // Enable CORS for frontend communication
 
 // Import routes here
+const clubRoutes = require("./routes/clubRoutes");
 
 // Route setup here
+app.use("/clubs", clubRoutes);
 
 // Default route
 app.get("/", (req, res) => {
