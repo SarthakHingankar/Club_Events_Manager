@@ -2,14 +2,19 @@ import React from "react";
 import Google from "../assets/Google.png";
 import { auth } from "./firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore"; // Add Firestore import
+import { db } from "./firebase"; // Import Firestore database instance
 import { toast } from "react-toastify";
 
 function GoogleSignUp() {
-  function googleLogin() {
+  async function googleLogin() {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider).then(async (result) => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user; // Get user data from result
       console.log(result);
-      if (result.user) {
+
+      if (user) {
         await setDoc(doc(db, "Users", user.uid), {
           email: user.email,
           firstName: user.displayName,
@@ -17,10 +22,17 @@ function GoogleSignUp() {
         toast.success("User logged in Successfully", {
           position: "top-center",
         });
-        window.location.href = "/dashboard";
+        // Redirect after Firestore document is successfully set
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 2500);
       }
-    });
+    } catch (error) {
+      console.error("Error during login: ", error);
+      toast.error("Login failed. Please try again.");
+    }
   }
+
   return (
     <div className="mt-8">
       <button

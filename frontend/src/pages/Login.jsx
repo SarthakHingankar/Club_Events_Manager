@@ -14,6 +14,7 @@ function Login() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("User loggin in successfully");
+      window.location.href = "/dashboard";
       toast.success("User Logged in Successfully", {
         position: "top-center",
       });
@@ -99,7 +100,7 @@ function Login() {
               </div>
 
               <button
-                className="w-full bg-gradient-to-r from-sky-400 to-indigo-400 text-white font-semibold py-4 px-6 rounded-xl hover:from-sky-500 hover:to-indigo-500 transition-all duration-200 shadow-md hover:shadow-lg text-base"
+                className="w-full bg-gradient-to-r from-sky-400 to-indigo-400 text-white font-semibold py-4 px-6 rounded-xl hover:from-sky-500 hover:to-indigo-500 transition-all duration-200 shadow-md hover:shadow-lg text-base cursor-pointer"
                 type="submit"
               >
                 Log In
