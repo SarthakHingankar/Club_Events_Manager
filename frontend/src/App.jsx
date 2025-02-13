@@ -5,12 +5,12 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Team from "./pages/Team";
 import Signup from "./pages/Signup";
-import Login from "./pages/login";
-
+import Login from "./pages/Login";
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Dashboard from "./pages/dashboard";
 
 function App() {
   return (
@@ -22,6 +22,7 @@ function App() {
         <Route path="/team" element={<Team />} />
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<Signup />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
       <ToastContainer />
     </div>

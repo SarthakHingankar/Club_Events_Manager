@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { auth } from "/src/components/firebase";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import GoogleSignUp from "../components/GoogleSignUp";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -116,19 +117,7 @@ function Login() {
                 </Link>
               </p>
             </div>
-
-            <div className="mt-8">
-              <button className="w-full flex items-center justify-center gap-3 px-6 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200">
-                <img
-                  className="w-5 h-5"
-                  src="/frontend/src/assets/7123025_logo_google_g_icon.png"
-                  alt="Google"
-                />
-                <span className="text-gray-700 font-medium">
-                  Continue with Google
-                </span>
-              </button>
-            </div>
+            <GoogleSignUp />
           </div>
         </div>
       </div>
