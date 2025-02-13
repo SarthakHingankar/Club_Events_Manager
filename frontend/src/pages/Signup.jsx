@@ -30,6 +30,9 @@ function Signup() {
       toast.success("User Registered Successfully!!", {
         position: "top-center",
       });
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 3000);
     } catch (error) {
       console.log(error.message);
       toast.error(error.message, {
