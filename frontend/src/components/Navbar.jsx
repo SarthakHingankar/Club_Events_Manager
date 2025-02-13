@@ -1,17 +1,23 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const navigate = useNavigate();
+
   return (
     <nav className="bg-transparent">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
+        <Link
+          to="/"
+          className="flex items-center space-x-3 rtl:space-x-reverse"
+        >
           <img
-            src="/src/assets/Kaizen.png"
+            src="/frontend/src/assets/Kaizen.png"
             className="h-8 hover:scale-105 transition-transform"
             alt="Kaizen Logo"
           />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
-        </a>
+        </Link>
 
         <button
           data-collapse-toggle="navbar-default"
@@ -41,42 +47,43 @@ function Navbar() {
         <div className="hidden w-full md:block md:w-auto" id="navbar-default">
           <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0">
             <li>
-              <a
-                href="#"
+              <Link
+                to="/"
                 className="block py-2 px-3 text-white md:p-0 hover:text-black transition-colors"
                 aria-current="page"
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                to="/about"
                 className="block py-2 px-3 text-white md:p-0 hover:text-black transition-colors"
               >
                 About
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                to="/contact"
                 className="block py-2 px-3 text-white md:p-0 hover:text-black transition-colors"
               >
-                Services
-              </a>
+                Contact Us
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                to="/team"
                 className="block py-2 px-3 text-white md:p-0 hover:text-black transition-colors"
               >
                 Team
-              </a>
+              </Link>
             </li>
             <li>
               <button
                 type="button"
-                class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text- px-2 py-1 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 hover:text-black"
+                onClick={() => navigate("/login")}
+                className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text- px-2 py-1 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 hover:text-black cursor-pointer"
               >
                 Login
               </button>
