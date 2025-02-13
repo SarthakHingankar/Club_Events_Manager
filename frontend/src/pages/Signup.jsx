@@ -4,7 +4,7 @@ import { auth, db } from "/src/components/firebase"; // Ensure this is properly 
 import { setDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import 
+import GoogleSignUp from "../components/GoogleSignUp";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -118,7 +118,7 @@ function Signup() {
               </div>
 
               <button
-                className="w-full bg-gradient-to-r from-sky-400 to-indigo-400 text-white font-semibold py-4 px-6 rounded-xl hover:from-sky-500 hover:to-indigo-500 transition-all duration-200 shadow-md hover:shadow-lg text-base"
+                className="w-full bg-gradient-to-r from-sky-400 to-indigo-400 text-white font-semibold py-4 px-6 rounded-xl hover:from-sky-500 hover:to-indigo-500 transition-all duration-200 shadow-md hover:shadow-lg text-base cursor-pointer"
                 type="submit"
               >
                 Sign Up
@@ -136,20 +136,7 @@ function Signup() {
                 </Link>
               </p>
             </div>
-
-            <div className="mt-8">
-              <button className="w-full flex items-center justify-center gap-3 px-6 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200">
-                <img
-                  className="w-5 h-5"
-                  src="/api/placeholder/20/20"
-                  alt="Google"
-                />
-                <span className="text-gray-700 font-medium">
-                  Continue with Google
-                </span>
-              </button>
-            </div>
-
+            <GoogleSignUp />
             <div className="mt-8 text-center text-sm text-gray-500">
               <p>
                 By signing up, you agree to our{" "}
