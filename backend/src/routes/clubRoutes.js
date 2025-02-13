@@ -1,6 +1,12 @@
 const express = require("express");
 // const { verifyToken, checkRole } = require("../middleware/authMiddleware");
-const { createClub, getAllClubs } = require("../controllers/clubController");
+const {
+  createClub,
+  getAllClubs,
+  getClub,
+  updateClub,
+  deleteClub,
+} = require("../controllers/clubController");
 
 const router = express.Router();
 
@@ -9,7 +15,7 @@ const router = express.Router();
 
 router.get("/", getAllClubs);
 router.post("/", createClub);
-router.get("/:id", getClubById);
+router.get("/:id", getClub);
 router.put("/:id", updateClub);
 router.delete("/:id", deleteClub);
 
