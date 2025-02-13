@@ -2,6 +2,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "/src/components/firebase";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -107,12 +108,12 @@ function Login() {
             <div className="mt-8 text-center">
               <p className="text-gray-600">
                 Don't have an account?{" "}
-                <a
-                  href="#"
+                <Link
+                  to="/sign-up"
                   className="text-sky-500 hover:text-sky-600 font-medium transition-colors duration-200"
                 >
                   Sign Up
-                </a>
+                </Link>
               </p>
             </div>
 
@@ -120,7 +121,7 @@ function Login() {
               <button className="w-full flex items-center justify-center gap-3 px-6 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200">
                 <img
                   className="w-5 h-5"
-                  src="/api/placeholder/20/20"
+                  src="/frontend/src/assets/7123025_logo_google_g_icon.png"
                   alt="Google"
                 />
                 <span className="text-gray-700 font-medium">

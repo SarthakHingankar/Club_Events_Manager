@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { auth, db } from "/src/components/firebase"; // Ensure this is properly imported and initialized
 import { setDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import 
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -126,12 +128,12 @@ function Signup() {
             <div className="mt-8 text-center">
               <p className="text-gray-600">
                 Already have an account?{" "}
-                <a
-                  href="#"
+                <Link
+                  to="/login"
                   className="text-sky-500 hover:text-sky-600 font-medium transition-colors duration-200"
                 >
                   Log In
-                </a>
+                </Link>
               </p>
             </div>
 
