@@ -2,10 +2,11 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth"; // Import getAuth from firebase/auth
 import { getFirestore } from "firebase/firestore";
+require("dotenv").config();
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAQfnOg2H9OYVRbpN9-T5lRsz_05tUX30M",
+  apiKey: process.env.apiKEY,
   authDomain: "kaizen-auth-20ca9.firebaseapp.com",
   projectId: "kaizen-auth-20ca9",
   storageBucket: "kaizen-auth-20ca9.firebasestorage.app",
