@@ -12,10 +12,12 @@ app.use(cors()); // Enable CORS for frontend communication
 // Import routes here
 const clubRoutes = require("./routes/clubRoutes");
 const membersRoutes = require("./routes/membersRoutes");
+const eventsRoutes = require("./routes/eventsRoutes");
 
 // Route setup here
 app.use("/clubs", clubRoutes);
 app.use("/members", membersRoutes);
+app.use("/events", eventsRoutes);
 
 // Default route
 app.get("/", (req, res) => {
