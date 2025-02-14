@@ -3,6 +3,7 @@ const express = require("express");
 const {
   listMembers,
   joinClub,
+  updateMember,
   removeMember,
 } = require("../controllers/membersController");
 
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.get("/:club_id", listMembers);
 router.post("/:club_id", joinClub);
+router.put("/:club_id/:user_id", updateMember);
 router.delete("/:club_id/:user_id", removeMember);
 
 module.exports = router;
