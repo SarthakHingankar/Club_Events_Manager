@@ -37,12 +37,12 @@ exports.getEvent = async (req, res) => {
 exports.createEvent = async (req, res) => {
   try {
     const { club_id } = req.params;
-    const { title, description, date_time, venue } = req.body;
+    const { title, description, start_time, end_time, venue } = req.body;
 
     // Insert event
     await db.execute(
-      "INSERT INTO events (club_id, title, description, date_time, venue) VALUES (?, ?, ?, ?, ?)",
-      [club_id, title, description, date_time, venue]
+      "INSERT INTO events (club_id, title, description, start_time, end_time, venue) VALUES (?, ?, ?, ?, ?, ?)",
+      [club_id, title, description, start_time, end_time, venue]
     );
 
     res.status(201).json({ message: "Event created successfully!" });
@@ -54,11 +54,11 @@ exports.createEvent = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   try {
     const { event_id } = req.params;
-    const { title, description, date_time, venue } = req.body;
+    const { title, description, start_time, end_time, venue } = req.body;
 
     await db.execute(
-      "UPDATE events SET title = ?, description = ?, date_time = ?, venue = ? WHERE id = ?",
-      [title, description, date_time, venue, event_id]
+      "UPDATE events SET title = ?, description = ?, start_time = ?, end_time = ?, venue = ? WHERE id = ?",
+      [title, description, start_time, end_time, venue, event_id]
     );
 
     res.status(200).json({ message: "Event updated successfully!" });
