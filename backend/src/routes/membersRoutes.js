@@ -3,7 +3,6 @@ const express = require("express");
 const {
   listMembers,
   joinClub,
-  updateMember,
   removeMember,
 } = require("../controllers/membersController");
 
