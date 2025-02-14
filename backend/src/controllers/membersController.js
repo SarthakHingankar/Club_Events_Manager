@@ -26,7 +26,6 @@ exports.joinClub = async (req, res) => {
       return res.status(404).json({ error: "Club not found" });
     }
 
-    // Check if the user is already in the club
     const [existingMember] = await db.execute(
       "SELECT * FROM club_members WHERE club_id = ? AND user_id = ?",
       [club_id, user_id]
@@ -37,7 +36,6 @@ exports.joinClub = async (req, res) => {
         .json({ error: "Membership request already exists" });
     }
 
-    // Add user to club with 'pending' status
     await db.execute(
       "INSERT INTO club_members (club_id, user_id, status) VALUES (?, ?, 'pending')",
       [club_id, user_id]
