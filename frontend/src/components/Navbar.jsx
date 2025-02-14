@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <nav className="bg-transparent">
@@ -20,11 +25,11 @@ function Navbar() {
         </Link>
 
         <button
-          data-collapse-toggle="navbar-default"
+          onClick={toggleMenu} // Toggle function added here
           type="button"
           className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:focus:ring-gray-600 transition-colors"
           aria-controls="navbar-default"
-          aria-expanded="false"
+          aria-expanded={isMenuOpen} // Accessibility
         >
           <span className="sr-only">Open main menu</span>
           <svg
@@ -44,7 +49,12 @@ function Navbar() {
           </svg>
         </button>
 
-        <div className="hidden w-full md:block md:w-auto" id="navbar-default">
+        <div
+          className={`${
+            isMenuOpen ? "block" : "hidden"
+          } w-full md:block md:w-auto`}
+          id="navbar-default"
+        >
           <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0">
             <li>
               <Link
