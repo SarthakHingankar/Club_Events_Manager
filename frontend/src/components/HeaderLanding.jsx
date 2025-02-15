@@ -22,7 +22,7 @@ const HeaderLanding = () => {
             onClick={() => navigate("/sign-up")}
             className="text-black bg-sky-100 hover:bg-sky-200 focus:outline-none focus:ring-4 
                      focus:ring-blue-300 rounded-full text-xl md:text-2xl px-6 py-3 
-                     font-bold transition-all duration-300 hover:scale-105"
+                     font-bold transition-all duration-300 hover:scale-105 cursor-pointer"
           >
             Sign Up
           </button>
