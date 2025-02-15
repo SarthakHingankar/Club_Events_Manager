@@ -1,5 +1,5 @@
 const express = require("express");
-// const { verifyToken, checkRole } = require("../middleware/authMiddleware");
+const { verifyToken, checkAdmin } = require("../middleware/authMiddleware");
 const {
   createClub,
   getAllClubs,
@@ -10,13 +10,10 @@ const {
 
 const router = express.Router();
 
-// router.post("/", verifyToken, checkRole("admin"), createClub);
-// router.get("/", verifyToken, getAllClubs);
-
-router.get("/", getAllClubs);
-router.post("/", createClub);
-router.get("/:id", getClub);
-router.put("/:id", updateClub);
-router.delete("/:id", deleteClub);
+router.get("/", verifyToken, getAllClubs);
+router.post("/", verifyToken, createClub);
+router.get("/:id", verifyToken, getClub);
+router.put("/:id", verifyToken, checkAdmin, updateClub);
+router.delete("/:id", verifyToken, checkAdmin, deleteClub);
 
 module.exports = router;

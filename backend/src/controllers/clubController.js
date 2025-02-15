@@ -11,18 +11,35 @@ exports.getAllClubs = async (req, res) => {
 };
 
 exports.createClub = async (req, res) => {
+  const connection = await db.getConnection(); // Start a database connection
+  await connection.beginTransaction(); // Start a transaction
+
   try {
     const { name, description } = req.body;
-    const adminId = 2;
+    const user_id = req.user.uid; // Extract user ID from authentication middleware
 
-    const query =
-      "INSERT INTO clubs (name, description, created_by) VALUES (?, ?, ?)";
-    await db.execute(query, [name, description, adminId]);
+    // Insert the new club into the `clubs` table
+    const [clubResult] = await connection.execute(
+      "INSERT INTO clubs (name, description, admin_id) VALUES (?, ?, ?)",
+      [name, description, user_id]
+    );
+    const club_id = clubResult.insertId; // Get the new club's ID
 
-    res.status(201).json({ message: "Club created successfully!" });
+    // Add the creator as an admin in `club_members`
+    await connection.execute(
+      "INSERT INTO club_members (club_id, user_id, role, status) VALUES (?, ?, 'admin', 'approved')",
+      [club_id, user_id]
+    );
+
+    await connection.commit();
+
+    res.status(201).json({ message: "Club created and admin added!", club_id });
   } catch (error) {
-    console.error(error);
+    await connection.rollback();
+    console.error("Error creating club:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    connection.release();
   }
 };
 
