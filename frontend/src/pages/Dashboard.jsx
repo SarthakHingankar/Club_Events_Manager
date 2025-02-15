@@ -4,12 +4,31 @@ import Clubs from "./dashboardComponents/clubs";
 function Dashboard() {
   const [activeSection, setActiveSection] = useState("home");
 
+  // Function to handle the GET request
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+         const response = await fetch("http://localhost:3000/", {
+           method: "GET",
+           headers: {
+             "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`,
+           },
+         }); // Replace with your API URL
+        const data = await response.json();
+        console.log("Fetched Data:", data); // Do something with the fetched data
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData(); // Call the function when the dashboard loads
+  }, []); // Empty dependency array ensures this runs only once on component mount
+
   const renderSection = () => {
     switch (activeSection) {
       case "clubs":
         return <Clubs />; // Render the Clubs component dynamically
-      // case "other":
-      //   return <OtherSection />; // Render other dynamic content
       default:
         return <p>Welcome to the dashboard! Choose a section to explore.</p>;
     }
