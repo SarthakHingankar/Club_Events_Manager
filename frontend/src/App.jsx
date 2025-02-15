@@ -1,39 +1,31 @@
-import { useState } from "react";
-import "./index.css";
-import Landing from "./pages/Landing";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Team from "./pages/Team";
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Dashboard from "./pages/dashboard";
-import ProtectedRoute from "./contexts/ProtectedRoute";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+
+// Move ProtectedRoute outside of App component
+const ProtectedRoute = () => {
+  const { currentUser } = useAuth();
+
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Dashboard />;
+};
 
 function App() {
   return (
-    <div>
+    <AuthProvider>
       <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/team" element={<Team />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/sign-up" element={<Signup />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/register" element={<Signup />} />
+        <Route path="/dashboard/*" element={<ProtectedRoute />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
-      <ToastContainer />
-    </div>
+    </AuthProvider>
   );
 }
 

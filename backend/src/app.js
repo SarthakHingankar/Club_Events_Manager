@@ -12,14 +12,15 @@ app.use(cors()); // Enable CORS for frontend communication
 // Import routes here
 const clubRoutes = require("./routes/clubRoutes");
 const membersRoutes = require("./routes/membersRoutes");
-const eventsRoutes = require("./routes/eventsRoutes");
+const eventRoutes = require("./routes/eventRoutes");
 const { verifyToken } = require("./middleware/authMiddleware");
 const { checkAndAddUser } = require("./middleware/checkAndAddUser");
+const userRoutes = require("./routes/userRoutes");
 
-// Route setup here
-app.use("/clubs", clubRoutes);
-app.use("/members", membersRoutes);
-app.use("/events", eventsRoutes);
+// Mount routes - Update the order and paths
+app.use("/api/events", eventRoutes); // Changed from '/' to '/api/events'
+app.use("/api/clubs", clubRoutes); // Added /api prefix
+app.use("/api/users", userRoutes); // Added /api prefix
 
 // Default route
 app.get("/", verifyToken, checkAndAddUser, (req, res) => {
@@ -29,7 +30,12 @@ app.get("/", verifyToken, checkAndAddUser, (req, res) => {
 // Global error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: "Something went wrong!" });
+  res.status(500).json({ error: "Something broke!" });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports = app;
