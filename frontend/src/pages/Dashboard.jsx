@@ -10,7 +10,7 @@ function Dashboard() {
   const fetchDataOnClick = async () => {
     try {
       const token = await auth.currentUser.getIdToken();
-      const response = await fetch("http://localhost:5000/api/endpoint", {
+      const response = await fetch("http://localhost:3000/clubs", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -21,7 +21,6 @@ function Dashboard() {
       if (response.ok) {
         const data = await response.json();
         setResponseData(data);
-        console.log(responseData);
       } else {
         console.error("Error:", response.statusText);
       }
@@ -29,6 +28,12 @@ function Dashboard() {
       console.error("Error:", error);
     }
   };
+
+  useEffect(() => {
+    if (responseData !== null) {
+      console.log("Updated responseData:", responseData);
+    }
+  }, [responseData]);
 
   return (
     <div className="relative min-h-screen">
