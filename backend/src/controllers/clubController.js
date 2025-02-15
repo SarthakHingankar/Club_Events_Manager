@@ -45,9 +45,9 @@ exports.createClub = async (req, res) => {
 
 exports.getClub = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { club_id } = req.params;
     const [clubs] = await db.execute(
-      `SELECT * FROM clubs WHERE club_id = ${id}`
+      `SELECT * FROM clubs WHERE club_id = ${club_id}`
     );
     res.status(200).json(clubs);
   } catch (error) {
@@ -58,12 +58,12 @@ exports.getClub = async (req, res) => {
 
 exports.updateClub = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { club_id } = req.params;
     const { name, description } = req.body;
 
     const [result] = await db.execute(
       "UPDATE clubs SET name = ?, description = ? WHERE club_id = ?",
-      [name, description, id]
+      [name, description, club_id]
     );
 
     if (result.affectedRows === 0) {
@@ -79,8 +79,8 @@ exports.updateClub = async (req, res) => {
 
 exports.deleteClub = async (req, res) => {
   try {
-    const { id } = req.params;
-    await db.execute(`DELETE FROM clubs WHERE club_id = ${id}`);
+    const { club_id } = req.params;
+    await db.execute(`DELETE FROM clubs WHERE club_id = ${club_id}`);
     res.status(200).json({ message: "Club deleted successfully" });
   } catch (error) {
     console.error(error);
