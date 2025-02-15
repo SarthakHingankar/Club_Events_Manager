@@ -1,21 +1,20 @@
-import React,{ useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import Clubs from "./dashboardComponents/clubs";
 
 function Dashboard() {
- const [activeSection, setActiveSection] = useState("home"); 
+  const [activeSection, setActiveSection] = useState("home");
 
- const renderSection = () => {
-   switch (activeSection) {
-     case "clubs":
-       return <Clubs />; // Render the Clubs component dynamically
-    //  case "other":
-    //    return <OtherSection />; // Render other dynamic content
-     default:
-       return <p>Welcome to the dashboard! Choose a section to explore.</p>;
-   }
- };
- 
+  const renderSection = () => {
+    switch (activeSection) {
+      case "clubs":
+        return <Clubs />; // Render the Clubs component dynamically
+      // case "other":
+      //   return <OtherSection />; // Render other dynamic content
+      default:
+        return <p>Welcome to the dashboard! Choose a section to explore.</p>;
+    }
+  };
+
   return (
     <div className="relative min-h-screen">
       {/* Background gradient */}
@@ -56,10 +55,9 @@ function Dashboard() {
             <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
               <ul className="space-y-2 font-medium">
                 <li>
-                  <Link
-                    to="/"
+                  <button
                     onClick={() => setActiveSection("home")}
-                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    className="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Home icon */}
                     <svg
@@ -71,13 +69,12 @@ function Dashboard() {
                       <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                     </svg>
                     <span className="ms-3">Home</span>
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link
-                    to="/"
+                  <button
                     onClick={() => setActiveSection("clubs")}
-                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    className="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Clubs/Users icon */}
                     <svg
@@ -89,13 +86,12 @@ function Dashboard() {
                       <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
                     </svg>
                     <span className="ms-3">Clubs</span>
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link
-                    to="/"
+                  <button
                     onClick={() => setActiveSection("events")}
-                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    className="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Events icon */}
                     <svg
@@ -111,13 +107,12 @@ function Dashboard() {
                       ></path>
                     </svg>
                     <span className="ms-3">Events</span>
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link
-                    to="/"
+                  <button
                     onClick={() => setActiveSection("calender")}
-                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    className="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Calendar icon */}
                     <svg
@@ -133,13 +128,12 @@ function Dashboard() {
                       ></path>
                     </svg>
                     <span className="ms-3">Calendar</span>
-                  </Link>
+                  </button>
                 </li>
                 <li>
-                  <Link
-                    to="/"
+                  <button
                     onClick={() => setActiveSection("chat")}
-                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    className="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Chat icon */}
                     <svg
@@ -152,14 +146,13 @@ function Dashboard() {
                       <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
                     </svg>
                     <span className="ms-3">Chat</span>
-                  </Link>
+                  </button>
                 </li>
                 {/* New Profile item */}
                 <li>
-                  <Link
-                    to="/"
+                  <button
                     onClick={() => setActiveSection("profile")}
-                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    className="flex w-full items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Profile icon */}
                     <svg
@@ -175,7 +168,7 @@ function Dashboard() {
                       ></path>
                     </svg>
                     <span className="ms-3">Profile</span>
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -192,10 +185,13 @@ function Dashboard() {
           </div>
 
           {/* Main content area (section 3) */}
-          <div className="bg-white bg-opacity-50 flex items-center justify-center border-3 ">
-            <h2 className="text-xl font-semibold text-black mb-150 ml-0.5">
-              Main Content
-            </h2>
+          <div className="bg-white bg-opacity-50 flex items-center justify-center border-3">
+            <div className="text-center">
+              <h2 className="text-xl font-semibold text-black mb-4">
+                Main Content
+              </h2>
+              {renderSection()}
+            </div>
             {/* Add your main content here */}
           </div>
         </div>
@@ -203,4 +199,5 @@ function Dashboard() {
     </div>
   );
 }
+
 export default Dashboard;
