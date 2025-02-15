@@ -1,4 +1,5 @@
 const express = require("express");
+const { verifyToken, checkAdmin } = require("../middleware/authMiddleware");
 
 const {
   getAllEvents,
@@ -11,11 +12,11 @@ const {
 
 const router = express.Router();
 
-router.get("/", getAllEvents);
-router.get("/:club_id", getClubEvents);
-router.get("/:club_id/:event_id", getEvent);
-router.post("/:club_id", createEvent);
-router.put("/:event_id", updateEvent);
-router.delete("/:event_id", removeEvent);
+router.get("/", verifyToken, getAllEvents);
+router.get("/:club_id", verifyToken, getClubEvents);
+router.get("/:club_id/:event_id", verifyToken, getEvent);
+router.post("/:club_id", verifyToken, createEvent);
+router.put("/:event_id", verifyToken, checkAdmin, updateEvent);
+router.delete("/:event_id", verifyToken, checkAdmin, removeEvent);
 
 module.exports = router;

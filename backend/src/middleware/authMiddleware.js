@@ -1,0 +1,62 @@
+const admin = require("firebase-admin");
+const db = require("../config/db");
+require("dotenv").config();
+
+// Load Firebase service account credentials
+const serviceAccount = require("../config/kaizen-auth-20ca9-firebase-adminsdk-fbsvc-6eba7be050.json"); // ✅ Load credentials
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
+
+// Middleware to verify Firebase token
+const verifyToken = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Unauthorized: No token provided" });
+    }
+
+    const token = authHeader.split(" ")[1]; // Extract token after 'Bearer '
+    const decodedToken = await admin.auth().verifyIdToken(token);
+
+    req.user = decodedToken; // Attach user details to request
+    next(); // Proceed to the next middleware/controller
+  } catch (error) {
+    console.error("Auth Error:", error);
+    res.status(403).json({ error: "Unauthorized: Invalid or expired token" });
+  }
+};
+
+const checkAdmin = async (req, res, next) => {
+  try {
+    const { club_id } = req.params; // Get club ID from request URL
+    const user_id = req.user.uid; // Extract user ID from Firebase token
+
+    // Check if the user is an admin in the specified club
+    const [result] = await db.execute(
+      "SELECT role FROM club_members WHERE club_id = ? AND user_id = ?",
+      [club_id, user_id]
+    );
+
+    if (result.length === 0) {
+      return res
+        .status(403)
+        .json({ error: "Access denied: Not a club member" });
+    }
+
+    if (result[0].role !== "admin") {
+      return res.status(403).json({ error: "Access denied: Admins only" });
+    }
+
+    next();
+  } catch (error) {
+    console.error("Admin Check Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = { verifyToken, checkAdmin };
