@@ -132,7 +132,7 @@ function Clubs() {
 
                     {/* Action button */}
                     <button
-                      onClick={() => fetchClubDetails(club.id)} // Fetch the club details dynamically
+                      onClick={() => fetchClubDetails(club.club_id)} // Fetch the club details dynamically
                       className="mt-4 bg-purple-600 hover:bg-purple-700 text-white py-1 px-4 rounded-md text-sm transition-colors duration-300"
                     >
                       View Details
