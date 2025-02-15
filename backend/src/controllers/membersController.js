@@ -4,7 +4,7 @@ exports.listMembers = async (req, res) => {
   try {
     const { club_id } = req.params;
     const [members] = await db.execute(
-      "SELECT * FROM members WHERE club_id =?",
+      "SELECT * FROM club_members WHERE club_id =?",
       [club_id]
     );
     res.status(200).json(members);

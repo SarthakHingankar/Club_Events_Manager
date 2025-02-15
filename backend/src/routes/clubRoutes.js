@@ -12,8 +12,8 @@ const router = express.Router();
 
 router.get("/", verifyToken, getAllClubs);
 router.post("/", verifyToken, createClub);
-router.get("/:id", verifyToken, getClub);
-router.put("/:id", verifyToken, checkAdmin, updateClub);
-router.delete("/:id", verifyToken, checkAdmin, deleteClub);
+router.get("/:club_id", verifyToken, getClub);
+router.put("/:club_id", verifyToken, checkAdmin, updateClub);
+router.delete("/:club_id", verifyToken, checkAdmin, deleteClub);
 
 module.exports = router;
