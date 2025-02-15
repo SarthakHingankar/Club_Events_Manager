@@ -1,40 +1,21 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React,{ useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { auth } from "../components/firebase";
+import Clubs from "./dashboardComponents/clubs";
 
 function Dashboard() {
-  const [responseData, setResponseData] = useState(null);
+ const [activeSection, setActiveSection] = useState("home"); 
 
-  // Fetch data function for the onClick
-  const fetchDataOnClick = async () => {
-    try {
-      const token = await auth.currentUser.getIdToken();
-      const response = await fetch("http://localhost:3000/clubs", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setResponseData(data);
-      } else {
-        console.error("Error:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (responseData !== null) {
-      console.log("Updated responseData:", responseData);
-    }
-  }, [responseData]);
-
+ const renderSection = () => {
+   switch (activeSection) {
+     case "clubs":
+       return <Clubs />; // Render the Clubs component dynamically
+    //  case "other":
+    //    return <OtherSection />; // Render other dynamic content
+     default:
+       return <p>Welcome to the dashboard! Choose a section to explore.</p>;
+   }
+ };
+ 
   return (
     <div className="relative min-h-screen">
       {/* Background gradient */}
@@ -75,8 +56,9 @@ function Dashboard() {
             <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
               <ul className="space-y-2 font-medium">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/"
+                    onClick={() => setActiveSection("home")}
                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Home icon */}
@@ -89,12 +71,12 @@ function Dashboard() {
                       <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                     </svg>
                     <span className="ms-3">Home</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <Link
-                    href="#"
-                    onClick={fetchDataOnClick}
+                    to="/"
+                    onClick={() => setActiveSection("clubs")}
                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Clubs/Users icon */}
@@ -110,8 +92,9 @@ function Dashboard() {
                   </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/"
+                    onClick={() => setActiveSection("events")}
                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Events icon */}
@@ -128,14 +111,12 @@ function Dashboard() {
                       ></path>
                     </svg>
                     <span className="ms-3">Events</span>
-                    <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                      3
-                    </span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/"
+                    onClick={() => setActiveSection("calender")}
                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Calendar icon */}
@@ -152,11 +133,12 @@ function Dashboard() {
                       ></path>
                     </svg>
                     <span className="ms-3">Calendar</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/"
+                    onClick={() => setActiveSection("chat")}
                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Chat icon */}
@@ -170,15 +152,13 @@ function Dashboard() {
                       <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
                     </svg>
                     <span className="ms-3">Chat</span>
-                    <span className="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
-                      New
-                    </span>
-                  </a>
+                  </Link>
                 </li>
                 {/* New Profile item */}
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/"
+                    onClick={() => setActiveSection("profile")}
                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Profile icon */}
@@ -195,7 +175,7 @@ function Dashboard() {
                       ></path>
                     </svg>
                     <span className="ms-3">Profile</span>
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
