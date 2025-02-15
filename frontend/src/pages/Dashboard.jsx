@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Clubs from "./dashboardComponents/clubs";
+import { auth } from "../components/firebase"; // Assuming auth is already configured
 
 function Dashboard() {
   const [activeSection, setActiveSection] = useState("home");
@@ -8,15 +9,25 @@ function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-         const response = await fetch("http://localhost:3000/", {
-           method: "GET",
-           headers: {
-             "Content-Type": "application/json",
-             Authorization: `Bearer ${token}`,
-           },
-         }); // Replace with your API URL
-        const data = await response.json();
-        console.log("Fetched Data:", data); // Do something with the fetched data
+        // Get the current user and token
+        const user = auth.currentUser;
+        if (user) {
+          const token = await user.getIdToken(); // Fetch the Firebase token
+
+          // Make the API request
+          const response = await fetch("http://localhost:3000/", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const data = await response.json();
+          console.log("Fetched Data:", data); // Do something with the fetched data
+        } else {
+          console.error("No user is signed in");
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -24,7 +35,6 @@ function Dashboard() {
 
     fetchData(); // Call the function when the dashboard loads
   }, []); // Empty dependency array ensures this runs only once on component mount
-
   const renderSection = () => {
     switch (activeSection) {
       case "clubs":
