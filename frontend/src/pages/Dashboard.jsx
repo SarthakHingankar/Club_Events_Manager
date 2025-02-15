@@ -1,6 +1,35 @@
 import React from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { auth } from "../components/firebase";
 
 function Dashboard() {
+  const [responseData, setResponseData] = useState(null);
+
+  // Fetch data function for the onClick
+  const fetchDataOnClick = async () => {
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const response = await fetch("http://localhost:5000/api/endpoint", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setResponseData(data);
+        console.log(responseData);
+      } else {
+        console.error("Error:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div className="relative min-h-screen">
       {/* Background gradient */}
@@ -58,8 +87,9 @@ function Dashboard() {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="#"
+                    onClick={fetchDataOnClick}
                     className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     {/* Clubs/Users icon */}
@@ -72,7 +102,7 @@ function Dashboard() {
                       <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
                     </svg>
                     <span className="ms-3">Clubs</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a
@@ -188,5 +218,4 @@ function Dashboard() {
     </div>
   );
 }
-
 export default Dashboard;
