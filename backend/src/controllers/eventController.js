@@ -1,5 +1,6 @@
 const db = require("../config/db");
 const { addEventToGoogleCalendar } = require("../util/googleCalender");
+const { createEventNotification } = require("./notificationController");
 
 exports.getAllEvents = async (req, res) => {
   try {
@@ -96,69 +97,46 @@ exports.getEvent = async (req, res) => {
 };
 
 exports.createEvent = async (req, res) => {
-  const connection = await db.getConnection();
-  await connection.beginTransaction();
-
   try {
     const { club_id } = req.params;
-    const { title, description, venue, start_time, end_time, is_paid, price } =
+    const { title, description, start_time, end_time, venue, is_paid, price } =
       req.body;
-    const user_id = req.user.uid;
+    const creator_id = req.user.uid;
 
-    // Check if user is admin
-    const [admins] = await connection.execute(
-      'SELECT * FROM club_members WHERE club_id = ? AND user_id = ? AND role = "admin"',
-      [club_id, user_id]
+    // Check if user is admin of the club
+    const [admins] = await db.execute(
+      "SELECT * FROM club_members WHERE club_id = ? AND user_id = ? AND role = 'admin'",
+      [club_id, creator_id]
     );
 
     if (admins.length === 0) {
-      await connection.rollback();
       return res
         .status(403)
         .json({ error: "Only club admins can create events" });
     }
 
-    // Create event in database
-    const [eventResult] = await connection.execute(
+    // Create event
+    const [result] = await db.execute(
       `INSERT INTO events 
-       (club_id, title, description, venue, start_time, end_time, is_paid, price) 
+       (club_id, title, description, start_time, end_time, venue, is_paid, price) 
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        club_id,
-        title,
-        description,
-        venue,
-        start_time,
-        end_time,
-        is_paid,
-        price || null,
-      ]
+      [club_id, title, description, start_time, end_time, venue, is_paid, price]
     );
 
-    // If Google Calendar token is provided, add event there too
-    if (req.headers.authorization) {
-      const googleAccessToken = req.headers.authorization.split(" ")[1];
-      await addEventToGoogleCalendar(
-        googleAccessToken,
-        title,
-        description,
-        start_time,
-        end_time
-      );
-    }
-
-    await connection.commit();
+    // Create notifications for all club members
+    await createEventNotification(club_id, result.insertId, {
+      title,
+      start_time,
+      venue,
+    });
 
     res.status(201).json({
       message: "Event created successfully",
-      event_id: eventResult.insertId,
+      event_id: result.insertId,
     });
   } catch (error) {
-    await connection.rollback();
     console.error("Error creating event:", error);
     res.status(500).json({ error: "Failed to create event" });
-  } finally {
-    connection.release();
   }
 };
 

@@ -1,4 +1,4 @@
-const admin = require("firebase-admin");
+const admin = require("../config/firebase-admin");
 const db = require("../config/db");
 require("dotenv").config();
 
@@ -17,17 +17,23 @@ const verifyToken = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ error: "Unauthorized: No token provided" });
+      return res.status(401).json({ error: "No token provided" });
     }
 
-    const token = authHeader.split(" ")[1]; // Extract token after 'Bearer '
+    const token = authHeader.split("Bearer ")[1];
     const decodedToken = await admin.auth().verifyIdToken(token);
 
-    req.user = decodedToken; // Attach user details to request
-    next(); // Proceed to the next middleware/controller
+    // Add user info to request
+    req.user = {
+      uid: decodedToken.uid,
+      email: decodedToken.email,
+      name: decodedToken.name,
+    };
+
+    next();
   } catch (error) {
     console.error("Auth Error:", error);
-    res.status(403).json({ error: "Unauthorized: Invalid or expired token" });
+    res.status(401).json({ error: "Invalid token" });
   }
 };
 

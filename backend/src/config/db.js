@@ -1,4 +1,4 @@
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 require("dotenv").config();
 
 // Create a connection pool for better performance
@@ -12,7 +12,15 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-// Promisify queries for async/await support
-const db = pool.promise();
+// Test the connection
+pool
+  .getConnection()
+  .then((connection) => {
+    console.log("Successfully connected to the database");
+    connection.release();
+  })
+  .catch((err) => {
+    console.error("Error connecting to the database:", err.message);
+  });
 
-module.exports = db;
+module.exports = pool;

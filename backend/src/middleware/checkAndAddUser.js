@@ -2,27 +2,26 @@ const db = require("../config/db");
 
 const checkAndAddUser = async (req, res, next) => {
   try {
-    const { uid, name, email } = req.user; // Extract user details from Firebase token
+    const user = req.user; // From verifyToken middleware
 
-    // Check if the user exists
-    const [existingUser] = await db.execute(
+    // Check if user exists in database
+    const [existingUsers] = await db.execute(
       "SELECT * FROM users WHERE user_id = ?",
-      [uid]
+      [user.uid]
     );
 
-    if (existingUser.length === 0) {
-      // User does not exist, insert into the database
+    if (existingUsers.length === 0) {
+      // User doesn't exist, add them
       await db.execute(
         "INSERT INTO users (user_id, name, email) VALUES (?, ?, ?)",
-        [uid, name, email]
+        [user.uid, user.name || "Anonymous", user.email]
       );
-      console.log(`New user added: ${name} (${email})`);
     }
 
-    next(); // ✅ Proceed to the next middleware/controller
+    next();
   } catch (error) {
-    console.error("Error in checkAndAddUser:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error in checkAndAddUser middleware:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 

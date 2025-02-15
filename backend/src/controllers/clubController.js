@@ -13,25 +13,39 @@ exports.getAllClubs = async (req, res) => {
 exports.createClub = async (req, res) => {
   try {
     const { name, description } = req.body;
-    const creator_id = req.user.uid;
+    const creator_id = req.user.uid; // From Firebase auth
 
-    const [result] = await db.execute(
-      "INSERT INTO clubs (name, description, created_by) VALUES (?, ?, ?)",
-      [name, description, creator_id]
-    );
+    // Start a transaction
+    const connection = await db.getConnection();
+    await connection.beginTransaction();
 
-    const club_id = result.insertId;
+    try {
+      // Create the club
+      const [clubResult] = await connection.execute(
+        "INSERT INTO clubs (name, description, created_by, admin_id) VALUES (?, ?, ?, ?)",
+        [name, description, creator_id, creator_id]
+      );
 
-    // Add creator as admin member
-    await db.execute(
-      "INSERT INTO club_members (club_id, user_id, role, status) VALUES (?, ?, 'admin', 'approved')",
-      [club_id, creator_id]
-    );
+      const club_id = clubResult.insertId;
 
-    res.status(201).json({
-      message: "Club created successfully",
-      club_id: club_id,
-    });
+      // Add creator as admin member
+      await connection.execute(
+        "INSERT INTO club_members (club_id, user_id, role) VALUES (?, ?, 'admin')",
+        [club_id, creator_id]
+      );
+
+      await connection.commit();
+
+      res.status(201).json({
+        message: "Club created successfully",
+        club_id: club_id,
+      });
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   } catch (error) {
     console.error("Error creating club:", error);
     res.status(500).json({ error: "Failed to create club" });
@@ -166,5 +180,52 @@ exports.getMemberRole = async (req, res) => {
   } catch (error) {
     console.error("Error fetching member role:", error);
     res.status(500).json({ error: "Failed to fetch member role" });
+  }
+};
+
+exports.getClubDetails = async (req, res) => {
+  try {
+    const { club_id } = req.params;
+    const user_id = req.user.uid;
+
+    // Get club details
+    const [clubs] = await db.execute(
+      `SELECT c.*, 
+        (SELECT role FROM club_members WHERE club_id = c.club_id AND user_id = ?) as user_role
+       FROM clubs c 
+       WHERE c.club_id = ?`,
+      [user_id, club_id]
+    );
+
+    if (clubs.length === 0) {
+      return res.status(404).json({ error: "Club not found" });
+    }
+
+    // Get members if user is a member or admin
+    let members = [];
+    if (clubs[0].user_role) {
+      [members] = await db.execute(
+        `SELECT cm.*, u.name, u.email 
+         FROM club_members cm
+         JOIN users u ON cm.user_id = u.user_id
+         WHERE cm.club_id = ?`,
+        [club_id]
+      );
+    }
+
+    // Get events
+    const [events] = await db.execute(
+      "SELECT * FROM events WHERE club_id = ? ORDER BY start_time ASC",
+      [club_id]
+    );
+
+    res.status(200).json({
+      ...clubs[0],
+      members,
+      events,
+    });
+  } catch (error) {
+    console.error("Error fetching club details:", error);
+    res.status(500).json({ error: "Failed to fetch club details" });
   }
 };

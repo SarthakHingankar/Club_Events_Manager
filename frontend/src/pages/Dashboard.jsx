@@ -8,6 +8,8 @@ import Profile from "./dashboardComponents/Profile";
 import Chat from "./dashboardComponents/Chat";
 import ClubDetails from "./dashboardComponents/ClubDetails";
 import Home from "./dashboardComponents/Home";
+import NotificationBell from "../components/NotificationBell";
+import ClubsPage from "./dashboardComponents/ClubsPage";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -18,6 +20,20 @@ function Dashboard() {
       navigate("/login");
     } catch (error) {
       console.error("Error logging out:", error);
+    }
+  };
+
+  const getToken = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const token = await user.getIdToken();
+        console.log("Your Firebase Token:", token);
+      } else {
+        console.log("No user is signed in");
+      }
+    } catch (error) {
+      console.error("Error getting token:", error);
     }
   };
 
@@ -200,13 +216,26 @@ function Dashboard() {
           </button>
         </div>
       </div>
-
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
+        <div className="bg-white shadow">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between h-16">
+              <div className="flex">
+                {/* You can add breadcrumbs or other navigation here */}
+              </div>
+              <div className="flex items-center">
+                <NotificationBell />
+                {/* Add other header items here if needed */}
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="p-6">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="clubs" element={<Clubs />} />
+            <Route path="clubs" element={<ClubsPage />} />
             <Route path="clubs/:clubId" element={<ClubDetails />} />
             <Route path="events" element={<Events />} />
             <Route path="calendar" element={<Calendar />} />
