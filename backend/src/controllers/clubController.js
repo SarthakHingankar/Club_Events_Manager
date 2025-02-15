@@ -20,14 +20,14 @@ exports.createClub = async (req, res) => {
 
     // Insert the new club into the `clubs` table
     const [clubResult] = await connection.execute(
-      "INSERT INTO clubs (name, description, admin_id) VALUES (?, ?, ?)",
+      "INSERT INTO clubs (name, description, created_by) VALUES (?, ?, ?)",
       [name, description, user_id]
     );
     const club_id = clubResult.insertId; // Get the new club's ID
 
     // Add the creator as an admin in `club_members`
     await connection.execute(
-      "INSERT INTO club_members (club_id, user_id, role, status) VALUES (?, ?, 'admin', 'approved')",
+      "INSERT INTO club_members (club_id, user_id, role) VALUES (?, ?, 'admin')",
       [club_id, user_id]
     );
 

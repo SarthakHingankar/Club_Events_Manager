@@ -36,6 +36,11 @@ const checkAdmin = async (req, res, next) => {
     const { club_id } = req.params; // Get club ID from request URL
     const user_id = req.user.uid; // Extract user ID from Firebase token
 
+    // Check if club_id or user_id is missing
+    if (!club_id || !user_id) {
+      return res.status(400).json({ error: "Missing club ID or user ID" });
+    }
+
     // Check if the user is an admin in the specified club
     const [result] = await db.execute(
       "SELECT role FROM club_members WHERE club_id = ? AND user_id = ?",

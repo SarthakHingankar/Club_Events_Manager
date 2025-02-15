@@ -15,8 +15,8 @@ const router = express.Router();
 router.get("/", verifyToken, getAllEvents);
 router.get("/:club_id", verifyToken, getClubEvents);
 router.get("/:club_id/:event_id", verifyToken, getEvent);
-router.post("/:club_id", verifyToken, createEvent);
-router.put("/:event_id", verifyToken, checkAdmin, updateEvent);
-router.delete("/:event_id", verifyToken, checkAdmin, removeEvent);
+router.post("/:club_id", verifyToken, checkAdmin, createEvent);
+router.put("/:club_id/:event_id", verifyToken, checkAdmin, updateEvent);
+router.delete("/:club_id/:event_id", verifyToken, checkAdmin, removeEvent);
 
 module.exports = router;
