@@ -43,22 +43,13 @@ function Clubs() {
   }, []);
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      {/* Banner section at the top */}
+    <div className="w-full">
+      {/* Full-width banner section at the top */}
       <div className="bg-purple-100 bg-opacity-70 rounded-lg shadow-md p-6 mb-6">
         <h1 className="text-3xl font-bold text-purple-800">Explore Clubs</h1>
         <p className="text-gray-700 mt-2">
           Discover and join clubs that match your interests
         </p>
-
-        {/* Search or filter could go here */}
-        <div className="mt-4">
-          <input
-            type="text"
-            placeholder="Search clubs..."
-            className="w-full p-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
       </div>
 
       {/* Main content area */}
@@ -72,7 +63,7 @@ function Clubs() {
             {error}
           </div>
         ) : clubs.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
             {clubs.map((club, index) => (
               <div
                 key={index}
