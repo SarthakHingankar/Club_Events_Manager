@@ -3,15 +3,17 @@ import { auth } from "../../components/firebase";
 
 function Clubs() {
   const [clubs, setClubs] = useState([]);
+  const [selectedClub, setSelectedClub] = useState(null); // To store selected club details
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false); // Loading for individual club details
 
   const fetchClubsData = async () => {
     try {
       setLoading(true);
       const user = auth.currentUser;
       if (!user) {
-        setError("User not authenticated");
+        setError("User not authenticated.");
         setLoading(false);
         return;
       }
@@ -38,6 +40,38 @@ function Clubs() {
     }
   };
 
+  const fetchClubDetails = async (clubId) => {
+    try {
+      setLoadingDetails(true);
+      const user = auth.currentUser;
+      if (!user) {
+        setError("User not authenticated.");
+        setLoadingDetails(false);
+        return;
+      }
+
+      const token = await user.getIdToken();
+      const response = await fetch(`http://localhost:3000/clubs/${clubId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSelectedClub(data); // Set the selected club data
+      } else {
+        setError(`Failed to fetch club details: ${response.statusText}`);
+      }
+    } catch (error) {
+      setError(`Error: ${error.message}`);
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
   useEffect(() => {
     fetchClubsData();
   }, []);
@@ -48,7 +82,7 @@ function Clubs() {
       <div className="bg-purple-100 bg-opacity-70 rounded-lg shadow-md p-6 mb-6">
         <h1 className="text-3xl font-bold text-purple-800">Explore Clubs</h1>
         <p className="text-gray-700 mt-2">
-          Discover and join clubs that match your interests
+          Discover and join clubs that match your interests.
         </p>
       </div>
 
@@ -97,11 +131,37 @@ function Clubs() {
                     )}
 
                     {/* Action button */}
-                    <button className="mt-4 bg-purple-600 hover:bg-purple-700 text-white py-1 px-4 rounded-md text-sm transition-colors duration-300">
+                    <button
+                      onClick={() => fetchClubDetails(club.id)} // Fetch the club details dynamically
+                      className="mt-4 bg-purple-600 hover:bg-purple-700 text-white py-1 px-4 rounded-md text-sm transition-colors duration-300"
+                    >
                       View Details
                     </button>
                   </div>
                 </div>
+
+                {/* Conditionally show club details when clicked */}
+                {selectedClub && selectedClub.id === club.id && (
+                  <div className="mt-6 p-4 bg-purple-100 rounded-lg shadow-md">
+                    {loadingDetails ? (
+                      <div className="flex justify-center items-center h-20">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-700"></div>
+                      </div>
+                    ) : (
+                      <>
+                        <h3 className="text-2xl font-semibold text-purple-800">
+                          {selectedClub.name}
+                        </h3>
+                        <p className="text-gray-700 mt-2">
+                          {selectedClub.description}
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Members: {selectedClub.memberCount}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -123,7 +183,7 @@ function Clubs() {
             </svg>
             <p className="text-xl text-gray-600">No clubs available</p>
             <p className="text-gray-500 mt-2">
-              Check back later or create a new club
+              Check back later or create a new club.
             </p>
             <button className="mt-4 bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-md transition-colors duration-300">
               Create Club
