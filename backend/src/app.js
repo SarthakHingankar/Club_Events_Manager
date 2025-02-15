@@ -13,6 +13,8 @@ app.use(cors()); // Enable CORS for frontend communication
 const clubRoutes = require("./routes/clubRoutes");
 const membersRoutes = require("./routes/membersRoutes");
 const eventsRoutes = require("./routes/eventsRoutes");
+const { verifyToken } = require("./middleware/authMiddleware");
+const { checkAndAddUser } = require("./middleware/checkAndAddUser");
 
 // Route setup here
 app.use("/clubs", clubRoutes);
@@ -20,8 +22,8 @@ app.use("/members", membersRoutes);
 app.use("/events", eventsRoutes);
 
 // Default route
-app.get("/", (req, res) => {
-  res.send("API is running...");
+app.get("/", verifyToken, checkAndAddUser, (req, res) => {
+  res.json({ message: "User exists or has been added!" });
 });
 
 // Global error handling middleware
