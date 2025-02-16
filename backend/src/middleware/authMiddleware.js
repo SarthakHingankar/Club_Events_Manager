@@ -1,9 +1,9 @@
-const admin = require("../config/firebase-admin");
+const admin = require("firebase-admin");
 const db = require("../config/db");
 require("dotenv").config();
 
 // Load Firebase service account credentials
-const serviceAccount = require("../config/kaizen-auth-20ca9-firebase-adminsdk-fbsvc-6eba7be050.json"); // ✅ Load credentials
+const serviceAccount = require("../config/kaizen-auth-20ca9-firebase-adminsdk-fbsvc-a8409b66c3.json"); // Updated path to match your new JSON file
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -14,25 +14,16 @@ if (!admin.apps.length) {
 // Middleware to verify Firebase token
 const verifyToken = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    const token = req.headers.authorization?.split("Bearer ")[1];
+    if (!token) {
       return res.status(401).json({ error: "No token provided" });
     }
 
-    const token = authHeader.split("Bearer ")[1];
     const decodedToken = await admin.auth().verifyIdToken(token);
-
-    // Add user info to request
-    req.user = {
-      uid: decodedToken.uid,
-      email: decodedToken.email,
-      name: decodedToken.name,
-    };
-
+    req.user = decodedToken;
     next();
   } catch (error) {
-    console.error("Auth Error:", error);
+    console.error("Token verification failed:", error);
     res.status(401).json({ error: "Invalid token" });
   }
 };

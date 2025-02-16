@@ -5,8 +5,11 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import TestToken from "./pages/TestToken";
@@ -27,9 +30,15 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Login />} />
+          {/* Public Routes */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/sign-up" element={<Signup />} />
+
+          {/* Protected Dashboard Routes */}
           <Route path="/dashboard/*" element={<ProtectedRoute />} />
-          <Route path="/register" element={<Signup />} />
           <Route path="/test-token" element={<TestToken />} />
         </Routes>
       </AuthProvider>

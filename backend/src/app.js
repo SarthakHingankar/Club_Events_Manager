@@ -9,6 +9,7 @@ const userRoutes = require("./routes/userRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
 const userMiddleware = require("./middleware/checkAndAddUser");
 const db = require("./config/db");
+require("./config/firebase-admin");
 
 // Initialize Express app
 const app = express();
@@ -16,6 +17,12 @@ const app = express();
 // Middleware
 app.use(express.json()); // Parse JSON requests
 app.use(cors()); // Enable CORS for frontend communication
+
+// Debug middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
 // Public routes for testing
 app.get("/", (req, res) => {
@@ -63,7 +70,7 @@ app.use(
   notificationRoutes
 );
 app.use(
-  "/api/users",
+  "/api/user",
   authMiddleware.verifyToken,
   userMiddleware.checkAndAddUser,
   userRoutes
@@ -78,7 +85,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Something broke!" });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

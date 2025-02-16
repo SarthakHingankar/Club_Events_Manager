@@ -1,162 +1,129 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { auth } from "../../components/firebase";
 
 function Home() {
-  const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    clubsCount: 0,
+    eventsCount: 0,
+    notificationsCount: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchStats = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        console.log("No user found");
+        return;
+      }
+
+      const token = await user.getIdToken();
+      console.log("Token obtained, length:", token.length);
+
+      const response = await fetch("http://localhost:3001/api/user/stats", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Stats data:", data);
+      setStats(data);
+    } catch (error) {
+      console.error("Error in fetchStats:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Wait for auth to initialize
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("Auth state changed: user logged in");
+        fetchStats();
+      } else {
+        console.log("Auth state changed: no user");
+        setLoading(false);
+        setError("Please log in");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <div className="p-6">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="p-6 text-red-600">Error: {error}</div>;
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="bg-purple-100 rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-purple-800">
-          Welcome to Kaizen
+    <div className="p-6">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Welcome back,{" "}
+          {auth.currentUser?.displayName || auth.currentUser?.email || "User"}!
         </h1>
-        <p className="text-gray-600">Your hub for club activities and events</p>
+        <p className="text-gray-600">Here's what's happening with your clubs</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Clubs Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200">
-          <div className="flex items-center mb-4">
-            <svg
-              className="w-8 h-8 text-purple-600 mr-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            <h2 className="text-xl font-semibold text-purple-900">Clubs</h2>
-          </div>
-          <p className="text-gray-600 mb-4">
-            Join and participate in various clubs that match your interests.
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Stats Cards */}
+        <div className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+          <h3 className="text-gray-500 text-sm font-medium">Your Clubs</h3>
+          <p className="text-2xl font-bold text-gray-800 mt-2">
+            {stats.clubsCount}
           </p>
-          <button
-            onClick={() => navigate("/dashboard/clubs")}
-            className="text-purple-600 hover:text-purple-700 font-medium"
-          >
-            Browse Clubs →
-          </button>
         </div>
 
-        {/* Events Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200">
-          <div className="flex items-center mb-4">
-            <svg
-              className="w-8 h-8 text-purple-600 mr-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <h2 className="text-xl font-semibold text-purple-900">Events</h2>
-          </div>
-          <p className="text-gray-600 mb-4">
-            Discover upcoming events and activities organized by clubs.
+        <div className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+          <h3 className="text-gray-500 text-sm font-medium">Upcoming Events</h3>
+          <p className="text-2xl font-bold text-gray-800 mt-2">
+            {stats.eventsCount}
           </p>
-          <button
-            onClick={() => navigate("/dashboard/events")}
-            className="text-purple-600 hover:text-purple-700 font-medium"
-          >
-            View Events →
-          </button>
         </div>
 
-        {/* Calendar Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200">
-          <div className="flex items-center mb-4">
-            <svg
-              className="w-8 h-8 text-purple-600 mr-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm0 0H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z M16 2v4 M8 2v4 M3 10h18"
-              />
-            </svg>
-            <h2 className="text-xl font-semibold text-purple-900">Calendar</h2>
-          </div>
-          <p className="text-gray-600 mb-4">
-            Keep track of all your club activities and events in one place.
+        <div className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+          <h3 className="text-gray-500 text-sm font-medium">Notifications</h3>
+          <p className="text-2xl font-bold text-gray-800 mt-2">
+            {stats.notificationsCount}
           </p>
-          <button
-            onClick={() => navigate("/dashboard/calendar")}
-            className="text-purple-600 hover:text-purple-700 font-medium"
-          >
-            Open Calendar →
-          </button>
         </div>
+      </div>
 
-        {/* Chat Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200">
-          <div className="flex items-center mb-4">
-            <svg
-              className="w-8 h-8 text-purple-600 mr-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-              />
-            </svg>
-            <h2 className="text-xl font-semibold text-purple-900">Chat</h2>
-          </div>
-          <p className="text-gray-600 mb-4">
-            Connect and communicate with other club members.
-          </p>
-          <button
-            onClick={() => navigate("/dashboard/chat")}
-            className="text-purple-600 hover:text-purple-700 font-medium"
-          >
-            Start Chatting →
-          </button>
-        </div>
-
-        {/* Profile Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200">
-          <div className="flex items-center mb-4">
-            <svg
-              className="w-8 h-8 text-purple-600 mr-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-            <h2 className="text-xl font-semibold text-purple-900">Profile</h2>
-          </div>
-          <p className="text-gray-600 mb-4">
-            Manage your profile and club memberships.
-          </p>
-          <button
-            onClick={() => navigate("/dashboard/profile")}
-            className="text-purple-600 hover:text-purple-700 font-medium"
-          >
-            View Profile →
-          </button>
+      {/* Recent Activity Section */}
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Recent Activity
+        </h2>
+        <div className="bg-white rounded-lg shadow">
+          {stats.recentActivity && stats.recentActivity.length > 0 ? (
+            <div className="divide-y">
+              {stats.recentActivity.map((activity, index) => (
+                <div key={index} className="p-4">
+                  <p className="text-gray-700">{activity.message}</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {new Date(activity.timestamp).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-4 text-gray-500 text-center">
+              No recent activity
+            </div>
+          )}
         </div>
       </div>
     </div>
